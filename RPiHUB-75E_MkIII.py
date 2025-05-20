@@ -49,13 +49,13 @@ def display_frame(frame):
             top_pixel = frame[row, col]
             bottom_pixel = frame[row + DISPLAY_ROWS // 2, col]
 
-            GPIO.output(R1, top_pixel[0] > 127)
-            GPIO.output(G1, top_pixel[1] > 127)
-            GPIO.output(B1, top_pixel[2] > 127)
+            GPIO.output(R1, bool(top_pixel[0] > 127))
+            GPIO.output(G1, bool(top_pixel[1] > 127))
+            GPIO.output(B1, bool(top_pixel[2] > 127))
 
-            GPIO.output(R2, bottom_pixel[0] > 127)
-            GPIO.output(G2, bottom_pixel[1] > 127)
-            GPIO.output(B2, bottom_pixel[2] > 127)
+            GPIO.output(R2, bool(bottom_pixel[0] > 127))
+            GPIO.output(G2, bool(bottom_pixel[1] > 127))
+            GPIO.output(B2, bool(bottom_pixel[2] > 127))
 
             pulse(CLK)
 
