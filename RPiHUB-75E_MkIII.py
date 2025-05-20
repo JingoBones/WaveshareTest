@@ -1,0 +1,83 @@
+# RPiHUB-75E_MkIII.py
+# Updated version for test pattern output on HUB75E display
+
+import RPi.GPIO as GPIO
+import time
+import numpy as np
+
+# GPIO pin definitions
+R1 = 17
+G1 = 18
+B1 = 22
+R2 = 23
+G2 = 24
+B2 = 25
+A = 12
+B = 16
+C = 20
+D = 21
+CLK = 5
+LAT = 6
+OE = 13
+
+# Display configuration
+DISPLAY_ROWS = 32
+DISPLAY_COLS = 64
+FRAME_DELAY = 0.1
+
+# Setup GPIO
+GPIO.setmode(GPIO.BCM)
+OUTPUT_PINS = [R1, G1, B1, R2, G2, B2, A, B, C, D, CLK, LAT, OE]
+for pin in OUTPUT_PINS:
+    GPIO.setup(pin, GPIO.OUT)
+    GPIO.output(pin, 0)
+
+def pulse(pin):
+    GPIO.output(pin, 1)
+    GPIO.output(pin, 0)
+
+def select_row(row):
+    GPIO.output(A, row & 0x01)
+    GPIO.output(B, (row >> 1) & 0x01)
+    GPIO.output(C, (row >> 2) & 0x01)
+    GPIO.output(D, (row >> 3) & 0x01)
+
+def display_frame(frame):
+    for row in range(DISPLAY_ROWS // 2):
+        select_row(row)
+        for col in range(DISPLAY_COLS):
+            top_pixel = frame[row, col]
+            bottom_pixel = frame[row + DISPLAY_ROWS // 2, col]
+
+            GPIO.output(R1, top_pixel[0] > 127)
+            GPIO.output(G1, top_pixel[1] > 127)
+            GPIO.output(B1, top_pixel[2] > 127)
+
+            GPIO.output(R2, bottom_pixel[0] > 127)
+            GPIO.output(G2, bottom_pixel[1] > 127)
+            GPIO.output(B2, bottom_pixel[2] > 127)
+
+            pulse(CLK)
+
+        GPIO.output(OE, 1)
+        pulse(LAT)
+        GPIO.output(OE, 0)
+
+# Create a simple test pattern: vertical RGB stripes
+frame = np.zeros((DISPLAY_ROWS, DISPLAY_COLS, 3), dtype=np.uint8)
+for x in range(DISPLAY_COLS):
+    if x % 3 == 0:
+        frame[:, x] = [255, 0, 0]  # Red
+    elif x % 3 == 1:
+        frame[:, x] = [0, 255, 0]  # Green
+    else:
+        frame[:, x] = [0, 0, 255]  # Blue
+
+try:
+    while True:
+        display_frame(frame)
+        time.sleep(FRAME_DELAY)
+
+except KeyboardInterrupt:
+    print("\nExiting and cleaning up GPIO...")
+    GPIO.cleanup()
