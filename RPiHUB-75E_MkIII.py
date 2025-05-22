@@ -61,6 +61,7 @@ def display_frame(frame):
             GPIO.output(OE, 0)
             GPIO.output(CLK, 1)
             #pulse(CLK)
+            time.sleep(0.0001)
             GPIO.output(OE, 1)
             GPIO.output(CLK, 0)
 
