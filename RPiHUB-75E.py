@@ -113,7 +113,7 @@ while True:
          FrameDirection *= -1
 
    # Update LED Matrix.
-   for Row in range(DISPLAY_ROWS / 2):
+   for Row in range(DISPLAY_ROWS // 2):
       # Select row to dispaly.
       RPi.GPIO.output(HUB75E_A, Row & 1)
       RPi.GPIO.output(HUB75E_B, Row & 2)
