@@ -31,6 +31,7 @@ OUTPUT_PINS = [R1, G1, B1, R2, G2, B2, A, B, C, D, CLK, LAT, OE]
 for pin in OUTPUT_PINS:
     GPIO.setup(pin, GPIO.OUT)
     GPIO.output(pin, 0)
+GPIO.output(OE, 1)
 
 def pulse(pin):
     GPIO.output(pin, 1)
@@ -56,12 +57,14 @@ def display_frame(frame):
             GPIO.output(R2, bool(bottom_pixel[0] > 127))
             GPIO.output(G2, bool(bottom_pixel[1] > 127))
             GPIO.output(B2, bool(bottom_pixel[2] > 127))
+            
+            GPIO.output(OE, 0)
+            GPIO.output(CLK, 1)
+            #pulse(CLK)
+            GPIO.output(OE, 1)
+            GPIO.output(CLK, 0)
 
-            pulse(CLK)
-
-        GPIO.output(OE, 1)
         pulse(LAT)
-        GPIO.output(OE, 0)
 
 # Create a simple test pattern: vertical RGB stripes
 frame = np.zeros((DISPLAY_ROWS, DISPLAY_COLS, 3), dtype=np.uint8)
