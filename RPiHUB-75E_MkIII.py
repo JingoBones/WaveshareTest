@@ -69,7 +69,7 @@ def display_frame(frame):
 
 # Create a simple test pattern: vertical RGB stripes
 frame = np.zeros((DISPLAY_ROWS, DISPLAY_COLS, 3), dtype=np.uint8)
-frame[:, :] = [0, 0, 255] # blue
+#frame[:, :] = [0, 0, 255] # blue test of blue LEDs when this line is uncommented and the rest of the pattern is commented out.
 #for x in range(DISPLAY_COLS):
     #if x % 3 == 0:
     #    frame[:, x] = [255, 0, 0]  # Red
@@ -77,6 +77,13 @@ frame[:, :] = [0, 0, 255] # blue
     #    frame[:, x] = [0, 255, 0]  # Green
     #else:
     #    frame[:, x] = [0, 0, 255]  # Blue
+for y in range(DISPLAY_ROWS):
+    if y % 3 == 0:
+        frame[y, :] = [255, 0, 0]  # Red
+    elif y % 3 == 1:
+        frame[y, :] = [0, 255, 0]  # Green
+    else:
+        frame[y, :] = [0, 0, 255]  # Blue
     
 
 try:
