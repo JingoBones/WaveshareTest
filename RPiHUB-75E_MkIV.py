@@ -23,7 +23,8 @@ OE = 18
 # Display configuration
 DISPLAY_ROWS = 32
 DISPLAY_COLS = 64
-FRAME_DELAY = 0.1
+FRAME_DELAY = 0.01 # previously 0.1
+ROW_DELAY = 0.0001
 
 # Setup GPIO
 GPIO.setmode(GPIO.BCM)
@@ -61,7 +62,7 @@ def display_frame(frame):
             GPIO.output(OE, 0)
             GPIO.output(CLK, 1)
             #pulse(CLK)
-            time.sleep(0.001)
+            time.sleep(ROW_DELAY)
             GPIO.output(OE, 1)
             GPIO.output(CLK, 0)
 
